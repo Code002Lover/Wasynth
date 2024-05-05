@@ -74,7 +74,7 @@ impl Target for LuaJIT {
 				Self::write_call_of("assert_trap", data, w)?;
 				writeln!(w)
 			}
-			WastExecute::Get { module, global } => {
+			WastExecute::Get { module, global, .. } => {
 				let name = get_name_from_id(*module);
 
 				write!(w, "assert_neq(")?;
@@ -114,7 +114,7 @@ impl Target for LuaJIT {
 
 				writeln!(w, "}})")
 			}
-			WastExecute::Get { module, global } => {
+			WastExecute::Get { module, global, .. } => {
 				let name = get_name_from_id(*module);
 
 				write!(w, "assert_eq(")?;

@@ -41,14 +41,16 @@ fn reader_to_code(reader: OperatorsReader) -> Vec<Operator> {
 }
 
 fn write_named_array(name: &str, len: usize, w: &mut dyn Write) -> Result<()> {
-	let Some(len) = len.checked_sub(1) else { return Ok(()) };
+	let Some(len) = len.checked_sub(1) else {
+		return Ok(());
+	};
 
 	writeln!(w, "local {name} = table_new({len}, 1)")
 }
 
 fn write_constant(init: &ConstExpr, type_info: &TypeInfo, w: &mut dyn Write) -> Result<()> {
 	let code = reader_to_code(init.get_operators_reader());
-	let func = Factory::from_type_info(type_info).create_anonymous(&code);
+	let func = Factory::from_type_info(type_info).create_anonymous(code.as_slice());
 
 	if let Some(Statement::SetTemporary(stat)) = func.code().code().last() {
 		stat.value().write(&mut Manager::empty(), w)
@@ -151,7 +153,11 @@ fn write_global_list(wasm: &Module, type_info: &TypeInfo, w: &mut dyn Write) -> 
 
 fn write_element_list(list: &[Element], type_info: &TypeInfo, w: &mut dyn Write) -> Result<()> {
 	for element in list {
-		let ElementKind::Active { table_index: index, offset_expr: init } = element.kind else {
+		let ElementKind::Active {
+			table_index: index,
+			offset_expr: init,
+		} = element.kind
+		else {
 			unimplemented!("passive elements not supported")
 		};
 
@@ -173,7 +179,7 @@ fn write_element_list(list: &[Element], type_info: &TypeInfo, w: &mut dyn Write)
 					write!(w, "FUNC_LIST[{index}],")?;
 				}
 			}
-			ElementItems::Expressions(expressions) => {
+			ElementItems::Expressions(_, expressions) => {
 				for init in expressions {
 					let init = init.unwrap();
 					write_constant(&init, type_info, w)?;

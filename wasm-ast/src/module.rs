@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 use wasmparser::{
 	BlockType, Data, Element, Export, ExternalKind, FunctionBody, Global, Import, LocalsReader,
-	MemoryType, Name, NameSectionReader, Parser, Payload, Result, Table, Type, TypeRef, ValType,
+	MemoryType, Name, NameSectionReader, Parser, Payload, RecGroup as Type, Result, Table, TypeRef,
+	ValType,
 };
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -255,10 +256,11 @@ impl<'a> TypeInfo<'a> {
 	}
 
 	pub(crate) fn by_type_index(&self, index: usize) -> (usize, usize) {
-		let Type::Func(ty) = &self.type_list[index] else {
-			unreachable!("type at func index must be a func type");
-		};
+		// let Type::Func(ty) = &self.type_list[index] else {
+		// 	unreachable!("type at func index must be a func type");
+		// };
 
+		let ty = self.type_list[index].types().next().unwrap().unwrap_func();
 		(ty.params().len(), ty.results().len())
 	}
 

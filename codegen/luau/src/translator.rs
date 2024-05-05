@@ -180,7 +180,7 @@ fn write_element_list(list: &[Element], type_info: &TypeInfo, w: &mut dyn Write)
 					write!(w, "FUNC_LIST[{index}],")?;
 				}
 			}
-			ElementItems::Expressions(expressions) => {
+			ElementItems::Expressions(_, expressions) => {
 				for init in expressions {
 					let init = init.unwrap();
 					write_constant(&init, type_info, w)?;

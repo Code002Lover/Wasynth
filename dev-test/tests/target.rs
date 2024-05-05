@@ -41,8 +41,8 @@ macro_rules! impl_write_number_nan {
 	};
 }
 
-impl_write_number_nan!(write_f32, write_f32_nan, f32, wast::token::Float32);
-impl_write_number_nan!(write_f64, write_f64_nan, f64, wast::token::Float64);
+impl_write_number_nan!(write_f32, write_f32_nan, f32, wast::token::F32);
+impl_write_number_nan!(write_f64, write_f64_nan, f64, wast::token::F64);
 
 #[allow(clippy::missing_const_for_fn)]
 fn try_into_ast_module(data: QuoteWat) -> Option<WaModule> {
